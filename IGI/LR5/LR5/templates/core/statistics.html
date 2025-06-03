@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Статистика сервисного центра</h1>
+
+    <div class="row">
+        <!-- Статистика по возрасту клиентов -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Статистика по возрасту клиентов</h5>
+                </div>
+                <div class="card-body">
+                    {% if age_stats %}
+                    <ul class="list-unstyled">
+                        <li><strong>Средний возраст:</strong> {{ age_stats.mean }} лет</li>
+                        <li><strong>Медианный возраст:</strong> {{ age_stats.median }} лет</li>
+                        <li><strong>Минимальный возраст:</strong> {{ age_stats.min }} лет</li>
+                        <li><strong>Максимальный возраст:</strong> {{ age_stats.max }} лет</li>
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">Нет данных о возрасте клиентов</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика по выручке -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Статистика по выручке</h5>
+                </div>
+                <div class="card-body">
+                    {% if revenue_stats %}
+                    <ul class="list-unstyled">
+                        <li><strong>Общая выручка:</strong> {{ revenue_stats.total|floatformat:2 }} руб.</li>
+                        <li><strong>Средняя выручка:</strong> {{ revenue_stats.mean|floatformat:2 }} руб.</li>
+                        <li><strong>Медианная выручка:</strong> {{ revenue_stats.median|floatformat:2 }} руб.</li>
+                        {% if revenue_stats.mode %}
+                        <li><strong>Мода выручки:</strong> {{ revenue_stats.mode|floatformat:2 }} руб.</li>
+                        {% endif %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">Нет данных о выручке</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Динамика заказов и выручки</h5>
+                </div>
+                <div class="card-body">
+                    <div id="monthly-chart" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Популярность услуг</h5>
+                </div>
+                <div class="card-body">
+                    <div id="popularity-chart" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Выручка по услугам</h5>
+                </div>
+                <div class="card-body">
+                    <div id="revenue-chart" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список клиентов -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Список клиентов</h5>
+        </div>
+        <div class="card-body">
+            {% if clients_list %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Email</th>
+                            <th>Телефон</th>
+                            <th>Дата рождения</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in clients_list %}
+                        <tr>
+                            <td>{{ client.user.get_full_name }}</td>
+                            <td>{{ client.user.email }}</td>
+                            <td>{{ client.phone_number }}</td>
+                            <td>{{ client.birth_date|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">Нет зарегистрированных клиентов</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Отображаем графики, если данные доступны
+    {% if monthly_chart %}
+    const monthlyData = JSON.parse('{{ monthly_chart|safe }}');
+    Plotly.newPlot('monthly-chart', monthlyData.data, monthlyData.layout);
+    {% endif %}
+
+    {% if popularity_chart %}
+    const popularityData = JSON.parse('{{ popularity_chart|safe }}');
+    Plotly.newPlot('popularity-chart', popularityData.data, popularityData.layout);
+    {% endif %}
+
+    {% if revenue_chart %}
+    const revenueData = JSON.parse('{{ revenue_chart|safe }}');
+    Plotly.newPlot('revenue-chart', revenueData.data, revenueData.layout);
+    {% endif %}
+</script>
+{% endblock %} 

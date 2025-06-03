@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Контакты</h1>
+    
+    {% if contacts %}
+    <div class="row">
+        {% for contact in contacts %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if contact.photo %}
+                <img src="{{ contact.photo.url }}" class="card-img-top" alt="{{ contact.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ contact.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ contact.position }}</h6>
+                    <p class="card-text">{{ contact.description }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-envelope"></i> 
+                        <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-phone"></i> 
+                        <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Контактная информация в процессе наполнения.</p>
+    {% endif %}
+</div>
+{% endblock %} 

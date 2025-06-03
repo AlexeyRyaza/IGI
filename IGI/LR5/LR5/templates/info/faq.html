@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}FAQ и Словарь{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">FAQ и Словарь терминов</h1>
+
+    <!-- Вкладки -->
+    <ul class="nav nav-tabs mb-4" id="faqTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms" type="button" role="tab">
+                Словарь терминов
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab">
+                Вопросы и ответы
+            </button>
+        </li>
+    </ul>
+
+    <!-- Содержимое вкладок -->
+    <div class="tab-content" id="faqTabContent">
+        <!-- Словарь терминов -->
+        <div class="tab-pane fade show active" id="terms" role="tabpanel">
+            {% if terms %}
+                <div class="accordion" id="termsAccordion">
+                    {% for term in terms %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term{{ term.id }}">
+                                {{ term.title }}
+                            </button>
+                        </h2>
+                        <div id="term{{ term.id }}" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                            <div class="accordion-body">
+                                {{ term.content|linebreaks }}
+                                <small class="text-muted d-block mt-2">
+                                    Последнее обновление: {{ term.updated_at|date:"d/m/Y H:i" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    В словаре пока нет терминов.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Вопросы и ответы -->
+        <div class="tab-pane fade" id="questions" role="tabpanel">
+            {% if questions %}
+                <div class="accordion" id="questionsAccordion">
+                    {% for question in questions %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#question{{ question.id }}">
+                                {{ question.title }}
+                            </button>
+                        </h2>
+                        <div id="question{{ question.id }}" class="accordion-collapse collapse" data-bs-parent="#questionsAccordion">
+                            <div class="accordion-body">
+                                {{ question.content|linebreaks }}
+                                <small class="text-muted d-block mt-2">
+                                    Последнее обновление: {{ question.updated_at|date:"d/m/Y H:i" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    В разделе пока нет вопросов и ответов.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

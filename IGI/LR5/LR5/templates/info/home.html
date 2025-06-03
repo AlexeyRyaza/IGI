@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Добро пожаловать в сервисный центр</h1>
+    
+    {% if latest_article %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Последняя новость: {{ latest_article.title }}</h2>
+            <p class="card-text">{{ latest_article.short_description }}</p>
+            <p class="text-muted">{{ latest_article.created_at|date:"d.m.Y" }}</p>
+            <a href="{% url 'article_detail' latest_article.id %}" class="btn btn-primary">Читать далее</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

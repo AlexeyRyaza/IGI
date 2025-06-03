@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}О компании{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">О компании</h1>
+    
+    {% if company_info %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3>{{ company_info.title }}</h3>
+            {{ company_info.content|linebreaks }}
+        </div>
+    </div>
+    {% else %}
+    <p>Информация о компании в процессе наполнения.</p>
+    {% endif %}
+</div>
+{% endblock %} 
