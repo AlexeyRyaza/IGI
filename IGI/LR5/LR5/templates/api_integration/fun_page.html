@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Развлечения{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Информация о времени</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Ваша временная зона:</strong> {{ timezone_name }}</p>
+                    <p><strong>Локальное время:</strong> {{ current_time_local }}</p>
+                    <p><strong>UTC время:</strong> {{ current_time_utc }}</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Календарь</h5>
+                </div>
+                <div class="card-body">
+                    {{ calendar|safe }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            {% if joke %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Случайная шутка</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ joke.setup }}</p>
+                    <p class="card-text"><em>{{ joke.punchline }}</em></p>
+                    <small class="text-muted">Тип: {{ joke.type }}</small><br>
+                    <small class="text-muted">Добавлено: {{ joke.created_at|date:"d/m/Y H:i:s" }}</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if cat_fact %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Интересный факт о кошках</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ cat_fact.fact }}</p>
+                    <small class="text-muted">Добавлено: {{ cat_fact.created_at|date:"d/m/Y H:i:s" }}</small>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="text-center">
+                <a href="{% url 'api:fun_page' %}" class="btn btn-primary">Получить новые факты</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    table.month {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    table.month th {
+        background-color: #f8f9fa;
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+    
+    table.month td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+    
+    table.month th.mon,
+    table.month th.tue,
+    table.month th.wed,
+    table.month th.thu,
+    table.month th.fri,
+    table.month th.sat,
+    table.month th.sun {
+        width: 14.28%;
+    }
+</style>
+{% endblock %} 

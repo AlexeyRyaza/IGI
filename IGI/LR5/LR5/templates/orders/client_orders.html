@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои заказы{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Мои заказы</h1>
+
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Устройство</th>
+                    <th>Услуги</th>
+                    <th>Статус</th>
+                    <th>Дата визита</th>
+                    <th>Стоимость</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>
+                        <strong>{{ order.device.device_type.name }}</strong><br>
+                        {{ order.device.brand }} {{ order.device.model }}
+                    </td>
+                    <td>
+                        <ul class="list-unstyled">
+                            {% for order_service in order.orderservice_set.all %}
+                            <li>{{ order_service.service.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                        <span class="badge bg-warning">В ожидании</span>
+                        {% elif order.status == 'in_progress' %}
+                        <span class="badge bg-info">В работе</span>
+                        {% elif order.status == 'completed' %}
+                        <span class="badge bg-success">Завершен</span>
+                        {% elif order.status == 'cancelled' %}
+                        <span class="badge bg-danger">Отменен</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.visit_date|date:"d.m.Y" }}</td>
+                    <td>{{ order.total_cost }} руб.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        У вас пока нет заказов. 
+        <a href="{% url 'services' %}" class="alert-link">Посмотреть доступные услуги</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

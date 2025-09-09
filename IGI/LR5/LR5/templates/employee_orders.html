@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои заказы - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Мои заказы</h1>
+            <p class="lead">Сотрудник: {{ employee.user.get_full_name }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Общая статистика</h5>
+                    <p class="card-text">
+                        <strong>Всего заказов:</strong> {{ orders|length }}<br>
+                        <strong>Общий заработок:</strong> {{ total_earnings|floatformat:2 }} руб.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if orders %}
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>№ заказа</th>
+                            <th>Клиент</th>
+                            <th>Устройство</th>
+                            <th>Услуги</th>
+                            <th>Запчасти</th>
+                            <th>Дата визита</th>
+                            <th>Статус</th>
+                            <th>Сумма заказа</th>
+                            <th>Мой заработок</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.client.user.get_full_name }}</td>
+                            <td>
+                                {{ order.device.device_type.name }}<br>
+                                <small class="text-muted">{{ order.device.brand }} {{ order.device.model }}</small>
+                            </td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    {% for service in order.orderservice_set.all %}
+                                    <li>{{ service.service.name }} x{{ service.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    {% for part in order.orderpart_set.all %}
+                                    <li>{{ part.part.name }} x{{ part.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>{{ order.visit_date }}</td>
+                            <td>
+                                <span class="badge {% if order.status == 'completed' %}bg-success
+                                             {% elif order.status == 'in_progress' %}bg-warning
+                                             {% elif order.status == 'cancelled' %}bg-danger
+                                             {% else %}bg-info{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ order.total_cost }} руб.</td>
+                            <td>{{ order.calculate_employee_earnings|floatformat:2 }} руб.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-info">
+                У вас пока нет заказов.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
